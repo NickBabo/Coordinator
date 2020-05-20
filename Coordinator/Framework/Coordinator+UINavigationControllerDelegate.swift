@@ -19,9 +19,4 @@ extension Coordinator: UINavigationControllerDelegate {
             handlePop(until: existingIndex)
         }
     }
-
-    private func handlePop(until index: Array<CoordinatorState>.Index) {
-        let k = (stateStack.count - 1) - index
-        stateStack = stateStack.dropLast(k)
-    }
 }

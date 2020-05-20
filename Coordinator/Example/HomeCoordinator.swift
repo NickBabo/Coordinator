@@ -13,12 +13,13 @@ final class HomeCoordinator: Coordinator {
 
 extension HomeCoordinator: ViewControllerDelegate {
     func didPushButton() {
-        let viewController = ViewController()
-        viewController.delegate = self
-        viewController.view.backgroundColor = .blue
-//        navigate(to: viewController, with: .present(onTopOfPreviousController: true))
-        navigate(to: viewController, with: .present())
-        print(stateStack)
+//        let viewController = ViewController()
+//        viewController.delegate = self
+//        viewController.view.backgroundColor = .blue
+//        navigate(to: viewController, with: .present())
+
+        let coordinator = Flow1Coordinator(navigationController: navigationController)
+        navigate(to: coordinator, with: .present())
     }
 
     func wantsToDismiss() {

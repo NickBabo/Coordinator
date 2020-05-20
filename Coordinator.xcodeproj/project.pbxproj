@@ -17,6 +17,8 @@
 		A1C76021247468030049DEED /* HomeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C76020247468030049DEED /* HomeCoordinator.swift */; };
 		A1D6AEEC2475735900C27762 /* Coordinator+UINavigationControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D6AEEB2475735900C27762 /* Coordinator+UINavigationControllerDelegate.swift */; };
 		A1D6AEEE2475737D00C27762 /* Coordinator+UIAdaptivePresentationControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D6AEED2475737D00C27762 /* Coordinator+UIAdaptivePresentationControllerDelegate.swift */; };
+		A1D6AEF02475D51F00C27762 /* Flow1Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D6AEEF2475D51F00C27762 /* Flow1Coordinator.swift */; };
+		A1D6AEF22475D54200C27762 /* Flow1ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D6AEF12475D54200C27762 /* Flow1ViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,8 @@
 		A1C76020247468030049DEED /* HomeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoordinator.swift; sourceTree = "<group>"; };
 		A1D6AEEB2475735900C27762 /* Coordinator+UINavigationControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coordinator+UINavigationControllerDelegate.swift"; sourceTree = "<group>"; };
 		A1D6AEED2475737D00C27762 /* Coordinator+UIAdaptivePresentationControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coordinator+UIAdaptivePresentationControllerDelegate.swift"; sourceTree = "<group>"; };
+		A1D6AEEF2475D51F00C27762 /* Flow1Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flow1Coordinator.swift; sourceTree = "<group>"; };
+		A1D6AEF12475D54200C27762 /* Flow1ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flow1ViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,10 +53,10 @@
 			isa = PBXGroup;
 			children = (
 				A1C7601E247467970049DEED /* Coordinator.swift */,
+				A1D6AEED2475737D00C27762 /* Coordinator+UIAdaptivePresentationControllerDelegate.swift */,
+				A1D6AEEB2475735900C27762 /* Coordinator+UINavigationControllerDelegate.swift */,
 				A104250724748B5000867392 /* CoordinatorProtocol.swift */,
 				A104250924748B5D00867392 /* NavigationType.swift */,
-				A1D6AEEB2475735900C27762 /* Coordinator+UINavigationControllerDelegate.swift */,
-				A1D6AEED2475737D00C27762 /* Coordinator+UIAdaptivePresentationControllerDelegate.swift */,
 			);
 			path = Framework;
 			sourceTree = "<group>";
@@ -77,22 +81,24 @@
 			isa = PBXGroup;
 			children = (
 				A104250624748B3600867392 /* Framework */,
-				A1C7602224746CFD0049DEED /* ViewController */,
-				A1C7600A247467760049DEED /* AppDelegate.swift */,
+				A1C7602224746CFD0049DEED /* Example */,
 				A1C76013247467790049DEED /* Assets.xcassets */,
-				A1C76015247467790049DEED /* LaunchScreen.storyboard */,
 				A1C76018247467790049DEED /* Info.plist */,
-				A1C76020247468030049DEED /* HomeCoordinator.swift */,
 			);
 			path = Coordinator;
 			sourceTree = "<group>";
 		};
-		A1C7602224746CFD0049DEED /* ViewController */ = {
+		A1C7602224746CFD0049DEED /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				A1C7600A247467760049DEED /* AppDelegate.swift */,
+				A1C76020247468030049DEED /* HomeCoordinator.swift */,
 				A1C7600E247467760049DEED /* ViewController.swift */,
+				A1C76015247467790049DEED /* LaunchScreen.storyboard */,
+				A1D6AEEF2475D51F00C27762 /* Flow1Coordinator.swift */,
+				A1D6AEF12475D54200C27762 /* Flow1ViewController.swift */,
 			);
-			path = ViewController;
+			path = Example;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -167,9 +173,11 @@
 			files = (
 				A1C7601F247467970049DEED /* Coordinator.swift in Sources */,
 				A1C7600F247467760049DEED /* ViewController.swift in Sources */,
+				A1D6AEF22475D54200C27762 /* Flow1ViewController.swift in Sources */,
 				A1C76021247468030049DEED /* HomeCoordinator.swift in Sources */,
 				A104250824748B5000867392 /* CoordinatorProtocol.swift in Sources */,
 				A104250A24748B5D00867392 /* NavigationType.swift in Sources */,
+				A1D6AEF02475D51F00C27762 /* Flow1Coordinator.swift in Sources */,
 				A1C7600B247467760049DEED /* AppDelegate.swift in Sources */,
 				A1D6AEEE2475737D00C27762 /* Coordinator+UIAdaptivePresentationControllerDelegate.swift in Sources */,
 				A1D6AEEC2475735900C27762 /* Coordinator+UINavigationControllerDelegate.swift in Sources */,

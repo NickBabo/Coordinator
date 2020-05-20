@@ -4,7 +4,14 @@ typealias CoordinatorState = (navigationType: NavigationType, viewController: UI
 
 class Coordinator: NSObject, CoordinatorType {
 
-    var stateStack: [CoordinatorState] = []
+    var didEndCoordinator: (() -> Void)?
+
+    var stateStack: [CoordinatorState] = [] {
+        didSet {
+            if stateStack.isEmpty { didEndCoordinator?() }
+        }
+    }
+
     var navigationController: UINavigationController
 
     init(navigationController: UINavigationController) {
@@ -19,7 +26,7 @@ class Coordinator: NSObject, CoordinatorType {
     }
 
     @discardableResult func navigate(to viewController: UIViewController,
-                                     with navigationType: TransitionType) -> UIViewController? {
+                                     with navigationType: TransitionType) -> UIViewController {
 
         switch navigationType {
             case .push:
@@ -33,7 +40,7 @@ class Coordinator: NSObject, CoordinatorType {
                         self?.present(viewController, completion: completion)
                     }
                 } else {
-                    guard navigationController.presentedViewController == nil else { return nil }
+                    guard navigationController.presentedViewController == nil else { return viewController }
                     present(viewController, completion: completion)
                 }
 
@@ -54,9 +61,10 @@ class Coordinator: NSObject, CoordinatorType {
     }
 
     @discardableResult func navigate(to coordinator: Coordinator,
-                                     with navigationType: TransitionType) -> Coordinator {
-//        coordinator.setPreviousStates(stateStack)
-
+                                     with navigationType: TransitionType) -> Coordinator? {
+        coordinator.didEndCoordinator = { [weak self] in
+            self?.handleCoordinatorEnd(coordinator)
+        }
         appendState(navigationType: CoordinatorNavigationType.coordinator(coordinator,
                                                                           navigationType: navigationType),
                     viewController: coordinator.start(with: navigationType))
@@ -64,9 +72,9 @@ class Coordinator: NSObject, CoordinatorType {
         return coordinator
     }
 
-//    func setPreviousStates(_ states: [CoordinatorState]) {
-//        self.stateStack = states
-//    }
+    func setPreviousStates(_ states: [CoordinatorState]) {
+        self.stateStack = states
+    }
 
     private func appendState(navigationType: NavigationType, viewController: UIViewController) {
         stateStack.append((navigationType, viewController))
@@ -98,6 +106,24 @@ class Coordinator: NSObject, CoordinatorType {
         }
     }
 
+    func handleCoordinatorEnd(_ coordinator: Coordinator) {
+        let coordinatorStateIndex = stateStack.firstIndex { state -> Bool in
+            if case .coordinator(let coord, _) = state.navigationType as? CoordinatorNavigationType {
+                return coord == coordinator
+            }
+            return false
+        }
+
+        guard let index = coordinatorStateIndex else { return }
+        handlePop(until: index)
+    }
+
+
+    func handlePop(until index: Array<CoordinatorState>.Index) {
+        let k = (stateStack.count - 1) - index
+        stateStack = stateStack.dropLast(k)
+    }
+
     private func currentState(is transitionType: TransitionType) -> Bool {
         if case transitionType = currentState?.navigationType as? TransitionType {
             return true
@@ -111,4 +137,30 @@ class Coordinator: NSObject, CoordinatorType {
         }
         return false
     }
+
+//    override var description: String {
+//        return formatDescription()
+//    }
+//
+//    private func format(_ state: CoordinatorState) -> String {
+//        switch state.navigationType {
+//            case TransitionType.push:
+//                return "Push - \(state.viewController.description)"
+//            case TransitionType.present:
+//                return "Present - \(state.viewController.description)"
+//            case TransitionType.root:
+//                return "Root - \(state.viewController.description)"
+//            case CoordinatorNavigationType.coordinator(let coordinator, let transitionType):
+//                return "Coordinator - \(coordinator.description) - \(transitionType)"
+//            default:
+//                return "unknown state"
+//        }
+//    }
+
+//    private func formatDescription() -> String {
+//        let stackDescription: [String] = stateStack.compactMap { state -> String in
+//            "\(format(state))"
+//        }
+//        return "\n -- State Stack -- \n \(stackDescription)"
+//    }
 }
