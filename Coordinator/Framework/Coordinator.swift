@@ -65,15 +65,12 @@ class Coordinator: NSObject, CoordinatorType {
         coordinator.didEndCoordinator = { [weak self] in
             self?.handleCoordinatorEnd(coordinator)
         }
+        
         appendState(navigationType: CoordinatorNavigationType.coordinator(coordinator,
                                                                           navigationType: navigationType),
                     viewController: coordinator.start(with: navigationType))
 
         return coordinator
-    }
-
-    func setPreviousStates(_ states: [CoordinatorState]) {
-        self.stateStack = states
     }
 
     private func appendState(navigationType: NavigationType, viewController: UIViewController) {
@@ -115,7 +112,7 @@ class Coordinator: NSObject, CoordinatorType {
         }
 
         guard let index = coordinatorStateIndex else { return }
-        handlePop(until: index)
+        handlePop(until: stateStack.index(before: index))
     }
 
 
