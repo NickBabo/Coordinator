@@ -81,6 +81,7 @@ class ViewController: UIViewController {
         self.canPopToRoot = canPopToRoot
         self.canDismiss = canDismiss
         super.init(nibName: nil, bundle: nil)
+        title = "ViewController"
     }
 
     @available(*, unavailable)

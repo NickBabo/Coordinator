@@ -31,12 +31,12 @@ extension HomeCoordinator: ViewControllerDelegate {
     }
 
     func wantsToPushCoordinator() {
-        let coordinator = Flow1Coordinator(navigationController: navigationController)
+        let coordinator = SubCoordinatorExample(navigationController: navigationController)
         navigate(to: coordinator, with: .push)
     }
 
     func wantsToPresentCoordinator() {
-        let coordinator = Flow1Coordinator(navigationController: navigationController)
+        let coordinator = SubCoordinatorExample(navigationController: navigationController)
         navigate(to: coordinator, with: .present())
     }
 

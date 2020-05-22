@@ -9,7 +9,7 @@ public class Coordinator: NSObject, CoordinatorType {
 
     var stateStack: [CoordinatorState] = [] {
         didSet {
-            print("\(self.description) - \(stateStack.count)")
+            print(makeMap())
             if stateStack.isEmpty { didEndCoordinator?() }
         }
     }
@@ -152,4 +152,16 @@ public class Coordinator: NSObject, CoordinatorType {
     func popToRootViewController(animated: Bool = true) {
         stateStack.last?.viewController.navigationController?.popToRootViewController(animated: animated)
     }
+
+    func makeMap() -> String {
+        var map = ""
+        stateStack.forEach {
+            map.append("\($0.navigationType): \($0.viewController.title ?? $0.viewController.description) -> ")
+        }
+        if !stateStack.isEmpty {
+            map.removeLast(4)
+        }
+        return map
+    }
 }
+

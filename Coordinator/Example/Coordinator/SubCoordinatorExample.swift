@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class Flow1Coordinator: Coordinator {
+final class SubCoordinatorExample: Coordinator {
 
     private var canDismiss: Bool = false
     private var canPopToRoot: Bool = false
@@ -17,25 +17,25 @@ final class Flow1Coordinator: Coordinator {
         switch navigation {
         case .present:
             canDismiss = true
-            let viewController = Flow1ViewController(canDismiss: canDismiss, canPopToRoot: canPopToRoot)
+            let viewController = ViewController(canDismiss: canDismiss, canPopToRoot: canPopToRoot)
             viewController.delegate = self
             let navigationcontroller = UINavigationController()
             navigationcontroller.viewControllers = [viewController]
             return navigate(to: navigationcontroller, with: navigation)
         case .push:
             canPopToRoot = true
-            let viewController = Flow1ViewController(canDismiss: canDismiss, canPopToRoot: canPopToRoot)
+            let viewController = ViewController(canDismiss: canDismiss, canPopToRoot: canPopToRoot)
             viewController.delegate = self
             return navigate(to: viewController, with: navigation)
         default:
-            let viewController = Flow1ViewController(canDismiss: canDismiss, canPopToRoot: canPopToRoot)
+            let viewController = ViewController(canDismiss: canDismiss, canPopToRoot: canPopToRoot)
             viewController.delegate = self
             return viewController
         }
     }
 }
 
-extension Flow1Coordinator: ViewControllerDelegate {
+extension SubCoordinatorExample: ViewControllerDelegate {
     func wantsToPush() {
         canPopToRoot = true
         let viewController = ViewController(canDismiss: canDismiss, canPopToRoot: canPopToRoot)
@@ -52,12 +52,12 @@ extension Flow1Coordinator: ViewControllerDelegate {
     }
 
     func wantsToPushCoordinator() {
-        let coordinator = Flow1Coordinator(navigationController: navigationController)
+        let coordinator = SubCoordinatorExample(navigationController: navigationController)
         navigate(to: coordinator, with: .push)
     }
 
     func wantsToPresentCoordinator() {
-        let coordinator = Flow1Coordinator(navigationController: navigationController)
+        let coordinator = SubCoordinatorExample(navigationController: navigationController)
         navigate(to: coordinator, with: .present())
     }
 
