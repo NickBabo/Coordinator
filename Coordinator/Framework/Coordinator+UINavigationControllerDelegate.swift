@@ -17,6 +17,8 @@ extension Coordinator: UINavigationControllerDelegate {
             $0.viewController == viewController
         }) {
             handlePop(until: existingIndex)
+        } else if stateStack.count == 1 && stateStack.first?.viewController != viewController {
+            stateStack.removeFirst()
         }
     }
 }

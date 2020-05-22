@@ -12,10 +12,37 @@ class ViewController: UIViewController {
 
     var delegate: ViewControllerDelegate?
 
-    private lazy var button: UIButton = {
+    private lazy var pushButton: UIButton = {
         let button = UIButton()
         button.setTitle("push", for: .normal)
         button.addTarget(self, action: #selector(handlePush), for: .touchUpInside)
+        button.backgroundColor = .green
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
+    private lazy var presentButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("present", for: .normal)
+        button.addTarget(self, action: #selector(handlePresent), for: .touchUpInside)
+        button.backgroundColor = .green
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
+    private lazy var coordinatorPushButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("push coordinator", for: .normal)
+        button.addTarget(self, action: #selector(handleCoordinatorPush), for: .touchUpInside)
+        button.backgroundColor = .green
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
+    private lazy var coordinatorPresentButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("present coordinator", for: .normal)
+        button.addTarget(self, action: #selector(handleCoordinatorPresent), for: .touchUpInside)
         button.backgroundColor = .green
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -30,40 +57,97 @@ class ViewController: UIViewController {
         return button
     }()
 
+    private lazy var popToRootButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("pop to root", for: .normal)
+        button.addTarget(self, action: #selector(handleRootPop), for: .touchUpInside)
+        button.backgroundColor = .purple
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
+    private lazy var stackView: UIStackView = {
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.axis = .vertical
+        stack.alignment = .center
+        stack.distribution = .equalSpacing
+        stack.spacing = 8
+        return stack
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         buildInterface()
+        view.backgroundColor = .white
     }
 
     func buildInterface() {
-        view.backgroundColor = .red
+        stackView.addArrangedSubview(pushButton)
+        stackView.addArrangedSubview(presentButton)
+        stackView.addArrangedSubview(coordinatorPushButton)
+        stackView.addArrangedSubview(coordinatorPresentButton)
 
-        view.addSubview(button)
+        view.addSubview(stackView)
         view.addSubview(dismissButton)
+        view.addSubview(popToRootButton)
 
-        button.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        button.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        button.widthAnchor.constraint(equalToConstant: 90).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        stackView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5).isActive = true
+
+        pushButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        presentButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        coordinatorPresentButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        coordinatorPushButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
 
         dismissButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         dismissButton.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         dismissButton.widthAnchor.constraint(equalToConstant: 90).isActive = true
         dismissButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+
+        popToRootButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        popToRootButton.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        popToRootButton.widthAnchor.constraint(equalToConstant: 90).isActive = true
+        popToRootButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
     }
 
     @objc
     func handlePush() {
-        delegate?.didPushButton()
+        delegate?.wantsToPush()
+    }
+
+    @objc
+    func handlePresent() {
+        delegate?.wantsToPresent()
+    }
+
+    @objc
+    func handleCoordinatorPush() {
+        delegate?.wantsToPushCoordinator()
+    }
+
+    @objc
+    func handleCoordinatorPresent() {
+        delegate?.wantsToPresentCoordinator()
     }
 
     @objc
     func handleDismiss() {
         delegate?.wantsToDismiss()
     }
+
+    @objc
+    func handleRootPop() {
+        delegate?.wantsToPopToRoot()
+    }
 }
 
 protocol ViewControllerDelegate {
-    func didPushButton()
+    func wantsToPush()
+    func wantsToPresent()
+    func wantsToPushCoordinator()
+    func wantsToPresentCoordinator()
     func wantsToDismiss()
+    func wantsToPopToRoot()
 }
