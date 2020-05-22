@@ -9,7 +9,7 @@
 import UIKit
 
 extension Coordinator: UIAdaptivePresentationControllerDelegate {
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+    public func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         handleDismiss()
     }
 }

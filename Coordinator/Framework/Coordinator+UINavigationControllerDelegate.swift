@@ -10,15 +10,22 @@ import UIKit
 
 extension Coordinator: UINavigationControllerDelegate {
 
-    func navigationController(_ navigationController: UINavigationController,
+    public func navigationController(_ navigationController: UINavigationController,
                               didShow viewController: UIViewController,
                               animated: Bool) {
-        if let existingIndex = stateStack.dropLast().firstIndex(where: {
-            $0.viewController == viewController
-        }) {
-            handlePop(until: existingIndex)
-        } else if stateStack.count == 1 && stateStack.first?.viewController != viewController {
-            stateStack.removeFirst()
+        guard viewController != currentState?.viewController else { return } // Guard viewController change is a Pop
+
+        if let viewControllerIndex = indexInTheStack(of: viewController) { // Popped to a viewController on stack
+            handlePop(until: viewControllerIndex)
+        } else { // Popped to a viewController from a previous coordinator
+            stateStack.removeAll()
+            didPopTo?(viewController)
         }
+    }
+
+    func indexInTheStack(of viewController: UIViewController) -> Array<CoordinatorState>.Index? {
+        return stateStack.dropLast().firstIndex(where: { state -> Bool in
+            state.viewController == viewController
+        })
     }
 }

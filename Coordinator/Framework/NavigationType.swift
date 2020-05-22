@@ -8,25 +8,14 @@
 
 import Foundation
 
-protocol NavigationType { }
+public protocol NavigationType { }
 
-enum TransitionType: NavigationType {
+public enum TransitionType: NavigationType {
     case push
     case present(onTopOfPreviousController: Bool = false, _ completion: (() -> Void)? = nil)
     case root
 }
 
-enum CoordinatorNavigationType: NavigationType {
+public enum CoordinatorNavigationType: NavigationType {
     case coordinator(Coordinator, navigationType: TransitionType)
-}
-
-extension TransitionType: Equatable {
-    static func == (lhs: TransitionType, rhs: TransitionType) -> Bool {
-        switch (lhs, rhs) {
-            case (.push, .push): return true
-            case (.present, .present): return true
-            case (.root, .root): return true
-            default: return false
-        }
-    }
 }
