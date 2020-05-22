@@ -10,18 +10,26 @@ import UIKit
 
 final class Flow1Coordinator: Coordinator {
 
-    override func start(with navigation: TransitionType) -> UIViewController {
-        let viewController = Flow1ViewController()
-        viewController.delegate = self
+    private var canDismiss: Bool = false
+    private var canPopToRoot: Bool = false
 
+    override func start(with navigation: TransitionType) -> UIViewController {
         switch navigation {
         case .present:
+            canDismiss = true
+            let viewController = Flow1ViewController(canDismiss: canDismiss, canPopToRoot: canPopToRoot)
+            viewController.delegate = self
             let navigationcontroller = UINavigationController()
             navigationcontroller.viewControllers = [viewController]
             return navigate(to: navigationcontroller, with: navigation)
         case .push:
+            canPopToRoot = true
+            let viewController = Flow1ViewController(canDismiss: canDismiss, canPopToRoot: canPopToRoot)
+            viewController.delegate = self
             return navigate(to: viewController, with: navigation)
         default:
+            let viewController = Flow1ViewController(canDismiss: canDismiss, canPopToRoot: canPopToRoot)
+            viewController.delegate = self
             return viewController
         }
     }
@@ -29,16 +37,17 @@ final class Flow1Coordinator: Coordinator {
 
 extension Flow1Coordinator: ViewControllerDelegate {
     func wantsToPush() {
-        let viewController = ViewController()
+        canPopToRoot = true
+        let viewController = ViewController(canDismiss: canDismiss, canPopToRoot: canPopToRoot)
         viewController.delegate = self
-        viewController.view.backgroundColor = .blue
         navigate(to: viewController, with: .push)
     }
 
     func wantsToPresent() {
-        let viewController = ViewController()
+        canDismiss = true
+        canPopToRoot = false
+        let viewController = ViewController(canDismiss: canDismiss, canPopToRoot: canPopToRoot)
         viewController.delegate = self
-        viewController.view.backgroundColor = .green
         navigate(to: viewController, with: .present())
     }
 
@@ -53,10 +62,12 @@ extension Flow1Coordinator: ViewControllerDelegate {
     }
 
     func wantsToPopToRoot() {
+        canPopToRoot = false
         popToRootViewController(animated: true)
     }
 
     func wantsToDismiss() {
+        canDismiss = false
         dismiss()
     }
 }

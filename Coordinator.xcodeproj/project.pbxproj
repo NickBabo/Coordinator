@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A104250824748B5000867392 /* CoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A104250724748B5000867392 /* CoordinatorProtocol.swift */; };
 		A104250A24748B5D00867392 /* NavigationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A104250924748B5D00867392 /* NavigationType.swift */; };
+		A1AFEBBC2478685A00C50134 /* RoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1AFEBBB2478685A00C50134 /* RoundedButton.swift */; };
 		A1C7600B247467760049DEED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C7600A247467760049DEED /* AppDelegate.swift */; };
 		A1C7600F247467760049DEED /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C7600E247467760049DEED /* ViewController.swift */; };
 		A1C76014247467790049DEED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1C76013247467790049DEED /* Assets.xcassets */; };
@@ -24,6 +25,7 @@
 /* Begin PBXFileReference section */
 		A104250724748B5000867392 /* CoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatorProtocol.swift; sourceTree = "<group>"; };
 		A104250924748B5D00867392 /* NavigationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationType.swift; sourceTree = "<group>"; };
+		A1AFEBBB2478685A00C50134 /* RoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
 		A1C76007247467760049DEED /* Coordinator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Coordinator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1C7600A247467760049DEED /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A1C7600E247467760049DEED /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 				A1C76015247467790049DEED /* LaunchScreen.storyboard */,
 				A1D6AEEF2475D51F00C27762 /* Flow1Coordinator.swift */,
 				A1D6AEF12475D54200C27762 /* Flow1ViewController.swift */,
+				A1AFEBBB2478685A00C50134 /* RoundedButton.swift */,
 			);
 			path = Example;
 			sourceTree = "<group>";
@@ -177,6 +180,7 @@
 				A1C76021247468030049DEED /* HomeCoordinator.swift in Sources */,
 				A104250824748B5000867392 /* CoordinatorProtocol.swift in Sources */,
 				A104250A24748B5D00867392 /* NavigationType.swift in Sources */,
+				A1AFEBBC2478685A00C50134 /* RoundedButton.swift in Sources */,
 				A1D6AEF02475D51F00C27762 /* Flow1Coordinator.swift in Sources */,
 				A1C7600B247467760049DEED /* AppDelegate.swift in Sources */,
 				A1D6AEEE2475737D00C27762 /* Coordinator+UIAdaptivePresentationControllerDelegate.swift in Sources */,

@@ -2,8 +2,11 @@ import UIKit
 
 final class HomeCoordinator: Coordinator {
 
+    private var canDismiss: Bool = false
+    private var canPopToRoot: Bool = false
+
     override func start(with navigation: TransitionType) -> UIViewController {
-        let viewController = ViewController()
+        let viewController = ViewController(canDismiss: canDismiss, canPopToRoot: canPopToRoot)
         viewController.delegate = self
         navigate(to: viewController, with: .root)
 
@@ -13,16 +16,17 @@ final class HomeCoordinator: Coordinator {
 
 extension HomeCoordinator: ViewControllerDelegate {
     func wantsToPush() {
-        let viewController = ViewController()
+        canPopToRoot = true
+        let viewController = ViewController(canDismiss: canDismiss, canPopToRoot: canPopToRoot)
         viewController.delegate = self
-        viewController.view.backgroundColor = .blue
         navigate(to: viewController, with: .push)
     }
 
     func wantsToPresent() {
-        let viewController = ViewController()
+        canDismiss = true
+        canPopToRoot = false
+        let viewController = ViewController(canDismiss: canDismiss, canPopToRoot: canPopToRoot)
         viewController.delegate = self
-        viewController.view.backgroundColor = .green
         navigate(to: viewController, with: .present())
     }
 
@@ -37,10 +41,12 @@ extension HomeCoordinator: ViewControllerDelegate {
     }
 
     func wantsToPopToRoot() {
+        canPopToRoot = false
         popToRootViewController(animated: true)
     }
 
     func wantsToDismiss() {
+        canDismiss = false
         dismiss()
     }
 }

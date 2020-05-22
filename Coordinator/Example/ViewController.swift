@@ -12,57 +12,55 @@ class ViewController: UIViewController {
 
     var delegate: ViewControllerDelegate?
 
-    private lazy var pushButton: UIButton = {
-        let button = UIButton()
+    private lazy var pushButton: RoundedButton = {
+        let button = RoundedButton()
         button.setTitle("push", for: .normal)
         button.addTarget(self, action: #selector(handlePush), for: .touchUpInside)
-        button.backgroundColor = .green
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
 
-    private lazy var presentButton: UIButton = {
-        let button = UIButton()
+    private lazy var presentButton: RoundedButton = {
+        let button = RoundedButton()
         button.setTitle("present", for: .normal)
         button.addTarget(self, action: #selector(handlePresent), for: .touchUpInside)
-        button.backgroundColor = .green
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
 
-    private lazy var coordinatorPushButton: UIButton = {
-        let button = UIButton()
+    private lazy var coordinatorPushButton: RoundedButton = {
+        let button = RoundedButton()
         button.setTitle("push coordinator", for: .normal)
         button.addTarget(self, action: #selector(handleCoordinatorPush), for: .touchUpInside)
-        button.backgroundColor = .green
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
 
-    private lazy var coordinatorPresentButton: UIButton = {
-        let button = UIButton()
+    private lazy var coordinatorPresentButton: RoundedButton = {
+        let button = RoundedButton()
         button.setTitle("present coordinator", for: .normal)
         button.addTarget(self, action: #selector(handleCoordinatorPresent), for: .touchUpInside)
-        button.backgroundColor = .green
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
 
-    private lazy var dismissButton: UIButton = {
-        let button = UIButton()
+    private lazy var dismissButton: RoundedButton = {
+        let button = RoundedButton()
         button.setTitle("dismiss", for: .normal)
         button.addTarget(self, action: #selector(handleDismiss), for: .touchUpInside)
-        button.backgroundColor = .purple
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.isHidden = !canDismiss
+        button.sizeToFit()
         return button
     }()
 
-    private lazy var popToRootButton: UIButton = {
-        let button = UIButton()
+    private lazy var popToRootButton: RoundedButton = {
+        let button = RoundedButton()
         button.setTitle("pop to root", for: .normal)
         button.addTarget(self, action: #selector(handleRootPop), for: .touchUpInside)
-        button.backgroundColor = .purple
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.isHidden = !canPopToRoot
+        button.sizeToFit()
         return button
     }()
 
@@ -76,10 +74,24 @@ class ViewController: UIViewController {
         return stack
     }()
 
+    private let canDismiss: Bool
+    private let canPopToRoot: Bool
+
+    init(canDismiss: Bool, canPopToRoot: Bool) {
+        self.canPopToRoot = canPopToRoot
+        self.canDismiss = canDismiss
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         buildInterface()
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(red: 1.00, green: 0.95, blue: 0.69, alpha: 1.00)
     }
 
     func buildInterface() {
@@ -94,7 +106,7 @@ class ViewController: UIViewController {
 
         stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        stackView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5).isActive = true
+        stackView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
 
         pushButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
         presentButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
@@ -103,12 +115,10 @@ class ViewController: UIViewController {
 
         dismissButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         dismissButton.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        dismissButton.widthAnchor.constraint(equalToConstant: 90).isActive = true
         dismissButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
 
         popToRootButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         popToRootButton.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        popToRootButton.widthAnchor.constraint(equalToConstant: 90).isActive = true
         popToRootButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
     }
 
