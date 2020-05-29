@@ -1,26 +1,32 @@
 import UIKit
 
-typealias CoordinatorState = (navigationType: NavigationType, viewController: UIViewController)
+protocol ParentCoordinatorType: AnyObject {
+    func notifyEnd(poppedTo viewController: UIViewController?)
+}
 
 public class Coordinator: NSObject, CoordinatorType {
 
-    var didEndCoordinator: (() -> Void)?
-    var didPopTo: ((UIViewController) -> Void)?
+    var didEndCoordinatorCompletion: (() -> Void)?
 
-    var stateStack: [CoordinatorState] = [] {
-        didSet {
-            print(makeMap())
-            if stateStack.isEmpty { didEndCoordinator?() }
-        }
-    }
+    var dismissHandler: DismissHandler = DismissHandler()
+    var popHandler: PopHandler = PopHandler()
+    let stateManager: StateManager = StateManager()
+
+    weak var parentCoordinator: ParentCoordinatorType?
 
     var navigationController: UINavigationController
 
     public init(navigationController: UINavigationController) {
         self.navigationController = navigationController
         super.init()
-        navigationController.delegate = self
-        navigationController.presentationController?.delegate = self
+
+        dismissHandler.delegate = stateManager
+        popHandler.delegate = stateManager
+
+        navigationController.delegate = popHandler
+        navigationController.presentationController?.delegate = dismissHandler
+
+        stateManager.delegate = self
     }
 
     public func start(with navigation: TransitionType) -> UIViewController {
@@ -35,7 +41,7 @@ public class Coordinator: NSObject, CoordinatorType {
                 push(viewController)
 
             case .present(let replacingPreviousController, let completion):
-                viewController.presentationController?.delegate = self
+                viewController.presentationController?.delegate = dismissHandler
 
                 if replacingPreviousController {
                     dismiss { [weak self] in
@@ -50,12 +56,15 @@ public class Coordinator: NSObject, CoordinatorType {
                 navigationController.viewControllers = [viewController]
         }
 
-        appendState(navigationType: navigationType, viewController: viewController)
+        stateManager.append(viewController, via: navigationType)
 
         return viewController
     }
 
     private func present(_ viewController: UIViewController, completion: (() -> Void)?) {
+        if let navigationController = viewController as? UINavigationController {
+            navigationController.delegate = popHandler
+        }
         navigationController.present(viewController,
                                      animated: true,
                                      completion: completion)
@@ -63,105 +72,54 @@ public class Coordinator: NSObject, CoordinatorType {
     }
 
     private func push(_ viewController: UIViewController) {
-        if let subNavigation = stateStack.last?.viewController.navigationController,
+        if let subNavigation = stateManager.currentState?.viewController.navigationController,
             subNavigation != self.navigationController {
-            subNavigation.delegate = self
+            subNavigation.delegate = self.popHandler
             subNavigation.pushViewController(viewController, animated: true)
         } else {
-            navigationController.delegate = self
+            navigationController.delegate = popHandler
             navigationController.pushViewController(viewController, animated: true)
         }
     }
 
     @discardableResult func navigate(to coordinator: Coordinator,
                                      with navigationType: TransitionType) -> Coordinator? {
-        coordinator.didEndCoordinator = { [weak self] in
-            self?.handleCoordinatorEnd(coordinator)
-        }
+        
+        coordinator.parentCoordinator = self
+        navigationController.delegate = coordinator.popHandler
 
-        coordinator.didPopTo = { [weak self] viewController in
-            self?.handlePop(to: viewController)
-        }
-
-        navigationController.delegate = coordinator
-
-        appendState(navigationType: CoordinatorNavigationType.coordinator(coordinator,
-                                                                          navigationType: navigationType),
-                    viewController: coordinator.start(with: navigationType))
+        stateManager.append(coordinator, via: navigationType)
 
         return coordinator
     }
 
-    private func appendState(navigationType: NavigationType, viewController: UIViewController) {
-        stateStack.append((navigationType, viewController))
-
-        if case .present = navigationType as? TransitionType, let navigationController = viewController as? UINavigationController {
-            navigationController.viewControllers.forEach { appendState(navigationType: TransitionType.push,
-                                                                       viewController: $0) }
-        }
-    }
-
-    func dismiss(_ completion: (() -> Void)? = nil) {
+    public func dismiss(_ completion: (() -> Void)? = nil) {
         guard let presentedViewController = navigationController.presentedViewController else {
             completion?()
             return
         }
         presentedViewController.dismiss(animated: true, completion: completion)
-        handleDismiss()
-    }
-
-    func handleDismiss() {
-        if let lastPresentedIndex = indexOfLastState(with: .present()) {
-            handlePop(until: stateStack.index(before: lastPresentedIndex))
-        }
-    }
-
-    func handleCoordinatorEnd(_ coordinator: Coordinator) {
-        let coordinatorStateIndex = stateStack.firstIndex { state -> Bool in
-            if case .coordinator(let coord, _) = state.navigationType as? CoordinatorNavigationType {
-                return coord == coordinator
-            }
-            return false
-        }
-
-        guard let index = coordinatorStateIndex else { return }
-        navigationController.delegate = self
-        handlePop(until: stateStack.index(before: index))
-    }
-
-    func handlePop(to viewController: UIViewController) {
-        if let viewControllerIndex = indexInTheStack(of: viewController) {
-            handlePop(until: viewControllerIndex)
-        }
-    }
-
-    func handlePop(until index: Array<CoordinatorState>.Index) {
-        let k = (stateStack.count - 1) - index
-        stateStack = stateStack.dropLast(k)
-    }
-
-    private func indexOfLastState(with transitionType: TransitionType) -> Array<CoordinatorState>.Index? {
-        stateStack.lastIndex(where: { state -> Bool in
-            if case .present = (state.navigationType as? TransitionType) {
-                return true
-            }
-            return false
-        })
+        stateManager.handleDismiss()
     }
 
     func popToRootViewController(animated: Bool = true) {
-        stateStack.last?.viewController.navigationController?.popToRootViewController(animated: animated)
-    }
-
-    func makeMap() -> String {
-        var map = ""
-        stateStack.forEach {
-            map.append("\($0.navigationType): \($0.viewController.title ?? $0.viewController.description) -> ")
-        }
-        if !stateStack.isEmpty {
-            map.removeLast(4)
-        }
-        return map
+        stateManager.currentState?.viewController.navigationController?.popToRootViewController(animated: animated)
     }
 }
 
+extension Coordinator: ParentCoordinatorType {
+    func notifyEnd(poppedTo viewController: UIViewController?) {
+        stateManager.didEndChildCoordinator(poppedTo: viewController)
+        navigationController.delegate = popHandler
+
+        if let viewController = viewController {
+            navigationController.popToViewController(viewController, animated: true)
+        }
+    }
+}
+
+extension Coordinator: StateManagerDelegate {
+    func didEndCoordinator(poppedTo viewController: UIViewController?) {
+        parentCoordinator?.notifyEnd(poppedTo: viewController)
+    }
+}

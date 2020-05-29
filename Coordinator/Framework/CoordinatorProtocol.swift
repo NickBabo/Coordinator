@@ -9,13 +9,10 @@
 import UIKit
 
 protocol CoordinatorType {
-    var stateStack: [CoordinatorState] { get set }
     var navigationController: UINavigationController { get }
     func start(with navigation: TransitionType) -> UIViewController
 }
 
-extension CoordinatorType {
-    var currentState: CoordinatorState? {
-        return stateStack.last
-    }
+public protocol TabCoordinator {
+    var childCoordinators: [Coordinator] { get }
 }
